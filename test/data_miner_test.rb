@@ -410,21 +410,36 @@ class AutomobileVariant < ActiveRecord::Base
   end
 end
 
+# class Country < ActiveRecord::Base
+#   set_primary_key :iso_3166
+#   
+#   data_miner do
+#     import 'The official ISO country list', :url => 'http://www.iso.org/iso/list-en1-semic-3.txt', :skip => 2, :headers => false, :delimiter => ';' do
+#       key 'iso_3166', :field_number => 1
+#       store 'name', :field_number => 0
+#     end
+#     
+#     import 'A Princeton dataset with better capitalization', :url => 'http://www.cs.princeton.edu/introcs/data/iso3166.csv' do
+#       key 'iso_3166', :field_name => 'country code'
+#       store 'name', :field_name => 'country'
+#     end
+#   end
+# end
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
 class Country < ActiveRecord::Base
   set_primary_key :iso_3166
   
   data_miner do
-    import 'The official ISO country list', :url => 'http://www.iso.org/iso/list-en1-semic-3.txt', :skip => 2, :headers => false, :delimiter => ';' do
-      key 'iso_3166', :field_number => 1
-      store 'name', :field_number => 0
-    end
-    
-    import 'A Princeton dataset with better capitalization', :url => 'http://www.cs.princeton.edu/introcs/data/iso3166.csv' do
+    import 'A Princeton dataset with better capitalization', :url => 'http://imports.s3.amazonaws.com/iso3166_11.csv' do
       key 'iso_3166', :field_name => 'country code'
       store 'name', :field_name => 'country'
     end
   end
 end
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 class Airport < ActiveRecord::Base
   set_primary_key :iata_code
@@ -1166,6 +1181,14 @@ end
 
 # todo: have somebody properly organize these
 class DataMinerTest < Test::Unit::TestCase
+  
+  if ENV['ALL'] == 'true' or ENV['CUSTOM'] == 'true'
+    should 'import my custom table' do
+      Country.run_data_miner!
+      assert Country.count > 0
+    end
+  end
+    
   if ENV['ALL'] == 'true' or ENV['NEW'] == 'true'
     should 'directly create a table for the model' do
       if AutomobileMakeFleetYear.table_exists?

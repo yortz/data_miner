@@ -51,14 +51,11 @@ module DataMiner
       test_counter = 0
 
       table.each_row do |row|
-        if ENV['DUMP'] == 'true'
-          raise "[data_miner gem] Stopping after 5 rows because TEST=true" if test_counter > 5
           test_counter += 1
           DataMiner.log_info %{Row #{test_counter}
 IN:  #{row.inspect}
 OUT: #{attributes.inject(Hash.new) { |memo, v| attr_name, attr = v; memo[attr_name] = attr.value_from_row(row); memo }.inspect}
           }
-        end
       
         record = resource.send "find_or_initialize_by_#{@key}", attributes[@key].value_from_row(row)
         attributes.each { |_, attr| attr.set_record_from_row record, row }

@@ -45,14 +45,14 @@ module DataMiner
     # Mine data for this class.
     def run(options = {})
       options.symbolize_keys!
-      
+
       return if DataMiner::Base.call_stack.include? resource.name
       DataMiner::Base.call_stack.push resource.name
-      
+
       finished = false
       skipped = false
       if DataMiner::Run.table_exists?
-        run = DataMiner::Run.create! :started_at => Time.now, :resource_name => resource.name, :killed => true
+        run = DataMiner::Run.create! :started_at => Time.now, :resource_name => resource.name, :killed => true, :import_id => options[:set_import], :uuid => options[:set_uuid]
       else
         run = nil
         DataMiner.log_info "Not logging individual runs. Please run DataMiner::Run.create_tables if you want to enable this."
@@ -72,7 +72,7 @@ module DataMiner
         if DataMiner::Run.table_exists?
           run.update_attributes! :terminated_at => Time.now, :finished => finished, :skipped => skipped, :killed => false
         end
-        DataMiner::Base.call_stack.clear if DataMiner::Base.call_stack.first == resource.name and !options[:preserve_call_stack_between_runs]
+        DataMiner::Base.call_stack.clear if DataMiner::Base.call_stack.first == resource.name
       end
       nil
     end

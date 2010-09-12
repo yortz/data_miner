@@ -11,7 +11,7 @@ ActiveRecord::Base.establish_connection(
   'adapter' => 'mysql',
   'database' => 'data_miner_test',
   'username' => 'root',
-  'password' => 'password'
+  'password' => ''
 )
 
 ActiveSupport::Inflector.inflections do |inflect|
@@ -101,13 +101,13 @@ ActiveRecord::Schema.define(:version => 20090819143429) do
   end
   execute 'ALTER TABLE airports ADD PRIMARY KEY (iata_code);'
   
-  create_table "countries", :force => true, :options => 'ENGINE=InnoDB default charset=utf8', :id => false do |t|
-    t.string   "iso_3166"
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-  execute "ALTER TABLE countries ADD PRIMARY KEY (iso_3166);"
+  # create_table "countries", :force => true, :options => 'ENGINE=InnoDB default charset=utf8', :id => false do |t|
+  #   t.string   "iso_3166"
+  #   t.string   "name"
+  #   t.datetime "created_at"
+  #   t.datetime "updated_at"
+  # end
+  # execute "ALTER TABLE countries ADD PRIMARY KEY (iso_3166);"
   
   create_table "census_regions", :force => true, :options => 'ENGINE=InnoDB default charset=utf8', :id => false do |t|
     t.integer  "number"
